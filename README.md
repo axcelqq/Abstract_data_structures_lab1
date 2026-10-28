@@ -14,5 +14,5 @@
 
 Все структуры — именованные (можно создавать несколько экземпляров одного типа), данные сохраняются в файл формата имя : содержимое.
 # Сборка
-``` g++ -std=c++11 -Wall -Wextra -o app.exe     main.cpp registry.cpp storage.cpp     array.cpp slist.cpp dlist.cpp stack.cpp queue.cpp avlTree.cpp ```
+``` g++ -std=c++11 -o app main.cpp registry.cpp storage.cpp array.cpp slist.cpp dlist.cpp stack.cpp queue.cpp avlTree.cpp ```
 
