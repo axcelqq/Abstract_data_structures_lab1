@@ -1,5 +1,6 @@
 #include "array.h"
 #include <iostream>
+#include <fstream>
 
 void initArray(Array& arr, int cap) {
     arr.capacity = cap;
@@ -54,8 +55,9 @@ void readArray(const Array& arr) {
     std::cout << "\n";
 }
 
+
 void destroyArray(Array& arr) {
-    delete arr.data;
+    delete[] arr.data;
     arr.data = nullptr;
     arr.size = 0;
     arr.capacity = 0;

@@ -1,4 +1,5 @@
 #include "avlTree.h"
+#include "queue.h"
 #include <iostream>
 #include <algorithm>
 
@@ -147,4 +148,81 @@ void readInOrder(AVLTree& tree) {
 void destroyAVL(AVLTree& tree) {
     destroyNode(tree.root);
     tree.root = nullptr;
+}
+
+// Симметричный (In-order): Лево -> Корень -> Право
+// Выводит элементы в отсортированном порядке!
+void inorder_rec(AVLNode* node) {
+    if (node == nullptr) return;
+    inorder_rec(node->left);
+    std::cout << node->key << " ";
+    inorder_rec(node->right);
+}
+
+// Прямой (Pre-order): Корень -> Лево -> Право
+// Используется для копирования дерева или сохранения в файл
+void preorder_rec(AVLNode* node) {
+    if (node == nullptr) return;
+    std::cout << node->key << " ";
+    preorder_rec(node->left);
+    preorder_rec(node->right);
+}
+
+// Обратный (Post-order): Лево -> Право -> Корень
+// Используется для удаления дерева (сначала дети, потом родитель)
+void postorder_rec(AVLNode* node) {
+    if (node == nullptr) return;
+    postorder_rec(node->left);
+    postorder_rec(node->right);
+    std::cout << node->key << " ";
+}
+
+// Функции-обертки, которые вызывает main
+void printInOrder(AVLTree& tree) {
+    std::cout << "InOrder:   ";
+    inorder_rec(tree.root);
+    std::cout << "\n";
+}
+
+void printPreOrder(AVLTree& tree) {
+    std::cout << "PreOrder:  ";
+    preorder_rec(tree.root);
+    std::cout << "\n";
+}
+
+void printPostOrder(AVLTree& tree) {
+    std::cout << "PostOrder: ";
+    postorder_rec(tree.root);
+    std::cout << "\n";
+}
+
+void printLevelOrder(AVLTree& tree) {
+    std::cout << "LevelOrder: ";
+    if (tree.root == nullptr) {
+        std::cout << "(empty)\n";
+        return;
+    }
+    AVLNode* nodes[1000]; // массив для хранения указателей
+    int front = 0;
+    int rear = 0;
+
+    // Кладем корень в очередь
+    nodes[rear++] = tree.root;
+
+    while (front < rear) {
+        // Достаем узел из начала очереди
+        AVLNode* current = nodes[front++];
+        
+        // Выводим его
+        std::cout << current->key << " ";
+
+        // Кладем в конец очереди его детей
+        if (current->left != nullptr) {
+            nodes[rear++] = current->left;
+        }
+        if (current->right != nullptr) {
+            nodes[rear++] = current->right;
+        }
+    }
+    std::cout << "\n";
 }

@@ -27,4 +27,9 @@ void readInOrder(AVLTree& tree);
 // Полное уничтожение дерева и освобождение памяти
 void destroyAVL(AVLTree& tree);
 
+void printInOrder(AVLTree& tree);
+void printPreOrder(AVLTree& tree);
+void printPostOrder(AVLTree& tree);
+void printLevelOrder(AVLTree& tree);
+
 #endif
