@@ -6,17 +6,17 @@ void initSList(SList& lst) {
     lst.size = 0;
 }
 
-void addHead(SList& lst, int val) {
+void addHead(SList& lst, int val) {     // добавление в начало (перед головой)
     SNode* n = new SNode{val, lst.head};
-    if (!lst.head) lst.tail = n; // если список был пуст, хвост тоже новый узел
+    if (!lst.head) lst.tail = n;    // если список был пуст, хвост тоже новый узел
     lst.head = n;
     ++lst.size;
 }
 
-void addTail(SList& lst, int val) {
+void addTail(SList& lst, int val) {     // добавление в конец (после хвоста)
     SNode* n = new SNode{val, nullptr};
     if (!lst.head) {
-        lst.head = lst.tail = n; // если список пуст, голова и хвост совпадают
+        lst.head = lst.tail = n;    // если список пуст, голова и хвост совпадают
     } else {
         lst.tail->next = n;
         lst.tail = n;
@@ -24,9 +24,9 @@ void addTail(SList& lst, int val) {
     ++lst.size;
 }
 
-void addAfterHead(SList& lst, int val) {
+void addAfterHead(SList& lst, int val) {    // добавление после головы
     if (!lst.head || !lst.head->next) {
-        addTail(lst, val); // если после головы нет элемента или список пуст, добавляем в конец
+        addTail(lst, val);      // если после головы нет элемента или список пуст, добавляем в конец
         return;
     }
     SNode* n = new SNode{val, lst.head->next};
@@ -34,9 +34,9 @@ void addAfterHead(SList& lst, int val) {
     ++lst.size;
 }
 
-void addBeforeTail(SList& lst, int val) {
+void addBeforeTail(SList& lst, int val) {     // добавление перед хвостом
     if (!lst.head || lst.head == lst.tail) {
-        addHead(lst, val); // если список пуст или содержит один элемент, добавляем в начало
+        addHead(lst, val);      // если список пуст или содержит один элемент, добавляем в начало
         return;
     }
     SNode* cur = lst.head;
@@ -47,16 +47,16 @@ void addBeforeTail(SList& lst, int val) {
     ++lst.size;
 }
 
-void removeHead(SList& lst) {
+void removeHead(SList& lst) {    // удаление из начала
     if (!lst.head) return;
     SNode* tmp = lst.head;
     lst.head = lst.head->next;
-    if (!lst.head) lst.tail = nullptr; // если список стал пустым, обнуляем хвост
+    if (!lst.head) lst.tail = nullptr;      // если список стал пустым, обнуляем хвост
     delete tmp;
     --lst.size;
 }
 
-void removeTail(SList& lst) {
+void removeTail(SList& lst) {    // удаление из конца
     if (!lst.head) return;
     if (lst.head == lst.tail) {
         delete lst.head;
@@ -73,18 +73,18 @@ void removeTail(SList& lst) {
     --lst.size;
 }
 
-void removeAfterHead(SList& lst) {
+void removeAfterHead(SList& lst) {  // удаление после головы
     if (!lst.head || !lst.head->next) return;
     SNode* tmp = lst.head->next;
     lst.head->next = tmp->next;
-    if (tmp == lst.tail) lst.tail = lst.head; // если удаляли последний элемент, обновляем хвост
+    if (tmp == lst.tail) lst.tail = lst.head;   // если удаляли последний элемент, обновляем хвост
     delete tmp;
     --lst.size;
 }
 
-void removeBeforeTail(SList& lst) {
+void removeBeforeTail(SList& lst) {     // удаление перед хвостом
     if (!lst.head || lst.head == lst.tail || lst.head->next == lst.tail) {
-        removeHead(lst); // если удаляемый элемент — голова или список слишком мал, удаляем голову
+        removeHead(lst);    // если удаляемый элемент — голова или список слишком мал, удаляем голову
         return;
     }
     SNode* cur = lst.head;
@@ -96,7 +96,7 @@ void removeBeforeTail(SList& lst) {
     --lst.size;
 }
 
-void removeByValue(SList& lst, int val) {
+void removeByValue(SList& lst, int val) {    // удаление первого найденного элемента по значению
     if (!lst.head) return;
     if (lst.head->data == val) {
         removeHead(lst);
@@ -108,12 +108,12 @@ void removeByValue(SList& lst, int val) {
     if (!cur->next) return;
     SNode* tmp = cur->next;
     cur->next = tmp->next;
-    if (tmp == lst.tail) lst.tail = cur; // если удаляли хвост, обновляем указатель
+    if (tmp == lst.tail) lst.tail = cur;    // если удаляли хвост, обновляем указатель
     delete tmp;
     --lst.size;
 }
 
-int searchByValue(const SList& lst, int val) {
+int searchByValue(const SList& lst, int val) {   // поиск элемента по значению
     SNode* cur = lst.head;
     int idx = 0;
     while (cur) {
@@ -124,7 +124,7 @@ int searchByValue(const SList& lst, int val) {
     return -1;
 }
 
-void readForward(const SList& lst) {
+void readForward(const SList& lst) {     // вывод списка в прямом порядке
     SNode* cur = lst.head;
     while (cur) {
         std::cout << cur->data << " ";
@@ -133,7 +133,7 @@ void readForward(const SList& lst) {
     std::cout << "\n";
 }
 
-void readWithIndices(const SList& lst) {
+void readWithIndices(const SList& lst) {     // вывод списка с индексацией элементов
     SNode* cur = lst.head;
     int idx = 0;
     while (cur) {

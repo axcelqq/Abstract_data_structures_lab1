@@ -17,4 +17,5 @@ int getLength(const Array& arr);    // получение текущего ко�
 void readArray(const Array& arr);   // вывод
 void destroyArray(Array& arr);
 
+
 #endif

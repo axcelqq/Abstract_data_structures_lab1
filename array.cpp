@@ -8,13 +8,13 @@ void initArray(Array& arr, int cap) {
     arr.data = new int[cap];
 }
 
-void addAtEnd(Array& arr, int val) {
+void addAtEnd(Array& arr, int val) {    // добавление в конец
     // проверка на переполнение перед добавлением
     if (arr.size >= arr.capacity) return;
     arr.data[arr.size++] = val;
 }
 
-void addAtIndex(Array& arr, int idx, int val) {
+void addAtIndex(Array& arr, int idx, int val) {      // добавление по индексу со сдвигом последующих эл-тов
     // проверка корректности индекса и наличия свободного места
     if (idx < 0 || idx > arr.size || arr.size >= arr.capacity) return;
     // сдвиг элементов вправо для освобождения места
@@ -29,7 +29,7 @@ int getElement(const Array& arr, int idx) {
     return (idx >= 0 && idx < arr.size) ? arr.data[idx] : -1;
 }
 
-void removeAtIndex(Array& arr, int idx) {
+void removeAtIndex(Array& arr, int idx) {    // удаление по индексу со сдвигом последующих эл-тов
     // проверка корректности индекса
     if (idx < 0 || idx >= arr.size) return;
     // сдвиг элементов влево для заполнения пробела

@@ -1,14 +1,12 @@
 #ifndef DLIST_H
 #define DLIST_H
 
-// Узел двусвязного списка: хранит данные и указатели на предыдущий и следующий узлы
 struct DNode {
     int data;
     DNode* prev;
     DNode* next;
 };
 
-// Структура списка: хранит указатели на голову и хвост, а также размер
 struct DList {
     DNode* head;
     DNode* tail;

@@ -4,7 +4,7 @@
 #include <cstring>
 using namespace std;
 
-// Делит строку на слова. Возвращает количество слов.
+// делит строку на слова. Возвращает количество слов.
 int splitWords(const char* s, char words[][64], int maxWords) {
     int count = 0;
     int i = 0;
@@ -46,8 +46,8 @@ void printHelp() {
     cout << "Общие       : PRINT | SAVE | LOAD | HELP | EXIT\n";
 }
 
-// ---------- обработка одной команды ----------
-// Возвращает true, если данные изменились (нужно сохранить в файл)
+// обработка одной команды 
+// возвращаение true, если данные изменились (нужно сохранить в файл)
 bool processCommand(const char* line, Registry& reg, const char* filename) {
     char w[8][64];
     int n = splitWords(line, w, 8);
@@ -56,7 +56,7 @@ bool processCommand(const char* line, Registry& reg, const char* filename) {
     const char* cmd = w[0];
     bool changed = false;
 
-    // ================= M : массив =================
+    // массив
     if (strcmp(cmd, "MPUSH") == 0 && n >= 3) {
         Entry* e = regGetOrCreate(reg, w[1], 'M');
         if (e) { addAtEnd(e->arr, toInt(w[2])); changed = true; }
@@ -92,7 +92,7 @@ bool processCommand(const char* line, Registry& reg, const char* filename) {
         else cout << "ERROR: array '" << w[1] << "' not found\n";
     }
 
-    // ================= F : односвязный =================
+    // односвязный
     else if (strcmp(cmd, "FPUSH") == 0 && n >= 3) {
         Entry* e = regGetOrCreate(reg, w[1], 'F');
         if (e) { addTail(e->fl, toInt(w[2])); changed = true; }
@@ -133,7 +133,7 @@ bool processCommand(const char* line, Registry& reg, const char* filename) {
         else cout << "ERROR: forward list '" << w[1] << "' not found\n";
     }
 
-    // ================= L : двусвязный =================
+    // двусвязный
     else if (strcmp(cmd, "LPUSH") == 0 && n >= 3) {
         Entry* e = regGetOrCreate(reg, w[1], 'L');
         if (e) { addTail(e->dl, toInt(w[2])); changed = true; }
@@ -179,7 +179,7 @@ bool processCommand(const char* line, Registry& reg, const char* filename) {
         else cout << "ERROR: doubly list '" << w[1] << "' not found\n";
     }
 
-    // ================= S : стек =================
+    // стек
     else if (strcmp(cmd, "SPUSH") == 0 && n >= 3) {
         Entry* e = regGetOrCreate(reg, w[1], 'S');
         if (e) { push(e->st, toInt(w[2])); changed = true; }
@@ -205,7 +205,7 @@ bool processCommand(const char* line, Registry& reg, const char* filename) {
         else cout << "ERROR: stack '" << w[1] << "' not found\n";
     }
 
-    // ================= Q : очередь =================
+    // очередь
     else if (strcmp(cmd, "QPUSH") == 0 && n >= 3) {
         Entry* e = regGetOrCreate(reg, w[1], 'Q');
         if (e) { push(e->q, toInt(w[2])); changed = true; }
@@ -231,7 +231,7 @@ bool processCommand(const char* line, Registry& reg, const char* filename) {
         else cout << "ERROR: queue '" << w[1] << "' not found\n";
     }
 
-    // ================= T : АВЛ =================
+    //авл
     else if (strcmp(cmd, "TINSERT") == 0 && n >= 3) {
         Entry* e = regGetOrCreate(reg, w[1], 'T');
         if (e) { insert(e->tr, toInt(w[2])); changed = true; }
@@ -273,7 +273,7 @@ bool processCommand(const char* line, Registry& reg, const char* filename) {
         else cout << "ERROR: tree '" << w[1] << "' not found\n";
     }
 
-    // ================= общие =================
+
     else if (strcmp(cmd, "PRINT") == 0) {
         Entry* e = reg.head;
         while (e) {
@@ -306,7 +306,6 @@ bool processCommand(const char* line, Registry& reg, const char* filename) {
     return changed;
 }
 
-// ================= main =================
 int main() {
     const char* filename = "data.txt";
 

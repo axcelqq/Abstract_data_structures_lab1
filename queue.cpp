@@ -6,10 +6,10 @@ void initQueue(Queue& q) {
     q.size = 0;
 }
 
-void push(Queue& q, int val) {
+void push(Queue& q, int val) {      // добавление в конец
     QueueNode* n = new QueueNode{val, nullptr};
     if (!q.rear) {
-        q.front = q.rear = n; // если очередь пуста, новый узел — и начало, и конец
+        q.front = q.rear = n;   // если очередь пуста, новый узел — и начало, и конец
     } else {
         q.rear->next = n;
         q.rear = n;
@@ -21,16 +21,16 @@ void pop(Queue& q) {
     if (!q.front) return;
     QueueNode* tmp = q.front;
     q.front = q.front->next;
-    if (!q.front) q.rear = nullptr; // если очередь стала пустой, обнуляем конец
+    if (!q.front) q.rear = nullptr;     // если очередь стала пустой, обнуляем конец
     delete tmp;
     --q.size;
 }
 
-int frontVal(const Queue& q) {
+int frontVal(const Queue& q) {      // удаление из начала
     return (q.front) ? q.front->data : -1;
 }
 
-void readQueue(const Queue& q) {
+void readQueue(const Queue& q) {    // получение значения начала без удаления
     QueueNode* cur = q.front;
     while (cur) {
         std::cout << cur->data << " ";
@@ -39,7 +39,7 @@ void readQueue(const Queue& q) {
     std::cout << "\n";
 }
 
-void destroyQueue(Queue& q) {
+void destroyQueue(Queue& q) {       // вывод всех элементов очереди (от начала к концу)
     while (q.front) {
         QueueNode* tmp = q.front;
         q.front = q.front->next;

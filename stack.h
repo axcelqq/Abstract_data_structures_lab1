@@ -1,13 +1,11 @@
 #ifndef STACK_H
 #define STACK_H
 
-// Узел стека: хранит данные и указатель на следующий узел
 struct StackNode {
     int data;
     StackNode* next;
 };
 
-// Структура стека: хранит указатель на вершину и размер
 struct Stack {
     StackNode* top;
     int size;
