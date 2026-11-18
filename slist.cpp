@@ -1,19 +1,20 @@
 #include "slist.h"
 #include <iostream>
+#include <string>
 
 void initSList(SList& lst) {
     lst.head = lst.tail = nullptr;
     lst.size = 0;
 }
 
-void addHead(SList& lst, int val) {     // добавление в начало (перед головой)
+void addHead(SList& lst, const std::string& val) {     // добавление в начало (перед головой)
     SNode* n = new SNode{val, lst.head};
     if (!lst.head) lst.tail = n;    // если список был пуст, хвост тоже новый узел
     lst.head = n;
     ++lst.size;
 }
 
-void addTail(SList& lst, int val) {     // добавление в конец (после хвоста)
+void addTail(SList& lst, const std::string& val) {     // добавление в конец (после хвоста)
     SNode* n = new SNode{val, nullptr};
     if (!lst.head) {
         lst.head = lst.tail = n;    // если список пуст, голова и хвост совпадают
@@ -24,7 +25,7 @@ void addTail(SList& lst, int val) {     // добавление в конец (�
     ++lst.size;
 }
 
-void addAfterHead(SList& lst, int val) {    // добавление после головы
+void addAfterHead(SList& lst, const std::string& val) {    // добавление после головы
     if (!lst.head || !lst.head->next) {
         addTail(lst, val);      // если после головы нет элемента или список пуст, добавляем в конец
         return;
@@ -34,7 +35,7 @@ void addAfterHead(SList& lst, int val) {    // добавление после �
     ++lst.size;
 }
 
-void addBeforeTail(SList& lst, int val) {     // добавление перед хвостом
+void addBeforeTail(SList& lst, const std::string& val) {     // добавление перед хвостом
     if (!lst.head || lst.head == lst.tail) {
         addHead(lst, val);      // если список пуст или содержит один элемент, добавляем в начало
         return;
@@ -96,7 +97,7 @@ void removeBeforeTail(SList& lst) {     // удаление перед хвос�
     --lst.size;
 }
 
-void removeByValue(SList& lst, int val) {    // удаление первого найденного элемента по значению
+void removeByValue(SList& lst, const std::string& val) {    // удаление первого найденного элемента по значению
     if (!lst.head) return;
     if (lst.head->data == val) {
         removeHead(lst);
@@ -113,7 +114,7 @@ void removeByValue(SList& lst, int val) {    // удаление первого 
     --lst.size;
 }
 
-int searchByValue(const SList& lst, int val) {   // поиск элемента по значению
+int searchByValue(const SList& lst, const std::string& val) {   // поиск элемента по значению
     SNode* cur = lst.head;
     int idx = 0;
     while (cur) {

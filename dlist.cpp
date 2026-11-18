@@ -1,12 +1,13 @@
 #include "dlist.h"
 #include <iostream>
+#include <string>
 
 void initDList(DList& lst) {
     lst.head = lst.tail = nullptr;
     lst.size = 0;
 }
 
-void addHead(DList& lst, int val) {      // добавление в начало
+void addHead(DList& lst, const std::string& val) {      // добавление в начало
     DNode* n = new DNode{val, nullptr, lst.head};
     if (lst.head) lst.head->prev = n;
     else lst.tail = n;      // если список был пуст, хвост тоже новый узел
@@ -14,7 +15,7 @@ void addHead(DList& lst, int val) {      // добавление в начало
     ++lst.size;
 }
 
-void addTail(DList& lst, int val) {     // добавление в конец
+void addTail(DList& lst, const std::string& val) {     // добавление в конец
     DNode* n = new DNode{val, lst.tail, nullptr};
     if (lst.tail) lst.tail->next = n;
     else lst.head = n;      // если список был пуст, голова тоже новый узел
@@ -22,7 +23,7 @@ void addTail(DList& lst, int val) {     // добавление в конец
     ++lst.size;
 }
 
-void addAfterHead(DList& lst, int val) {    // добавление после головы
+void addAfterHead(DList& lst, const std::string& val) {    // добавление после головы
     if (!lst.head || !lst.head->next) {
         addTail(lst, val);      // если после головы нет элемента или список пуст, добавляем в конец
         return;
@@ -33,7 +34,7 @@ void addAfterHead(DList& lst, int val) {    // добавление после �
     ++lst.size;
 }
 
-void addBeforeTail(DList& lst, int val) {       // добавлени перед хвостом
+void addBeforeTail(DList& lst, const std::string& val) {       // добавлени перед хвостом
     if (!lst.head || lst.head == lst.tail) {
         addHead(lst, val);      // если список пуст или содержит один элемент, добавляем в начало
         return;
@@ -87,7 +88,7 @@ void removeBeforeTail(DList& lst) {     // удаление перед хвос�
     --lst.size;
 }
 
-void removeByValue(DList& lst, int val) {    // удаление по значению
+void removeByValue(DList& lst, const std::string& val) {    // удаление по значению
     DNode* cur = lst.head;
     while (cur && cur->data != val)
         cur = cur->next;
@@ -100,7 +101,7 @@ void removeByValue(DList& lst, int val) {    // удаление по значе
     --lst.size;
 }
 
-int searchByValue(const DList& lst, int val) {  // поиск по значению
+int searchByValue(const DList& lst, const std::string& val) {  // поиск по значению
     DNode* cur = lst.head;
     int idx = 0;
     while (cur) {

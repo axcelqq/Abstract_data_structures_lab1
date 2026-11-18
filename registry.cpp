@@ -18,7 +18,7 @@ Entry* regFind(Registry& r, const char* name) {
 }
 
 Entry* regCreate(Registry& r, const char* name, char type) {
-    Entry* e = new Entry;
+    Entry* e = new Entry;      // tr конструируется автоматически
     strncpy(e->name, name, 63);
     e->name[63] = 0;
     e->type = type;
@@ -28,9 +28,9 @@ Entry* regCreate(Registry& r, const char* name, char type) {
     initDList(e->dl);
     initStack(e->st);
     initQueue(e->q);
-    initAVL(e->tr);
+    // CompleteBinaryTree уже создан конструктором по умолчанию (cap = 4)
 
-    e->next = r.head;    // вставляем в начало — проще всего
+    e->next = r.head;
     r.head = e;
     r.count++;
     return e;
@@ -58,7 +58,7 @@ void regFree(Registry& r) {
         destroyDList(cur->dl);
         destroyStack(cur->st);
         destroyQueue(cur->q);
-        destroyAVL(cur->tr);
+        // ~CompleteBinaryTree() вызовется автоматически при delete cur
         delete cur;
         cur = nxt;
     }

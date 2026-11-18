@@ -6,17 +6,17 @@
 #include "dlist.h"
 #include "stack.h"
 #include "queue.h"
-#include "avlTree.h"
+#include "complete_binary_tree.h"
 
 struct Entry {
-    char name[64];      // имя структуры, например "a1"
-    char type;          // 'M','F','L','S','Q','T'
+    char name[64];
+    char type;            // 'M','F','L','S','Q','T'
     Array arr;
     SList fl;
     DList dl;
     Stack st;
     Queue q;
-    AVLTree tr;
+    CompleteBinaryTree tr;   // теперь значение, не указатель
     Entry* next;
 };
 

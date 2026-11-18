@@ -2,6 +2,7 @@
 #include "storage.h"
 #include <iostream>
 #include <cstring>
+#include <string>
 using namespace std;
 
 // делит строку на слова. Возвращает количество слов.
@@ -22,16 +23,6 @@ int splitWords(const char* s, char words[][64], int maxWords) {
     return count;
 }
 
-int toInt(const char* s) {
-    int v = 0, i = 0, sign = 1;
-    if (s[i] == '-') { sign = -1; i++; }
-    while (s[i] >= '0' && s[i] <= '9') {
-        v = v * 10 + (s[i] - '0');
-        i++;
-    }
-    return v * sign;
-}
-
 void printHelp() {
     cout << "=== Команды ===\n";
     cout << "Массив   (M): MPUSH <имя> v | MPUSHAT <имя> i v | MDEL <имя> i | MSET <имя> i v\n";
@@ -42,7 +33,8 @@ void printHelp() {
     cout << "              LGET <имя> v | LLEN <имя> | LPRINT <имя> | LPRINTB <имя>\n";
     cout << "Стек     (S): SPUSH <имя> v | SPOP <имя> | SPEEK <имя> | SLEN <имя> | SPRINT <имя>\n";
     cout << "Очередь  (Q): QPUSH <имя> v | QPOP <имя> | QPEEK <имя> | QLEN <имя> | QPRINT <имя>\n";
-    cout << "Дерево   (T): TINSERT <имя> v | TDEL <имя> v | TGET <имя> v | TPRINT <имя>\n";
+    cout << "Дерево   (T): TINSERT mytree v | TGET mytree v | TCHECK mytree\n";
+    cout << "              TPRE mytree | TIN mytree | TPOST mytree\n";
     cout << "Общие       : PRINT | SAVE | LOAD | HELP | EXIT\n";
 }
 
@@ -56,29 +48,29 @@ bool processCommand(const char* line, Registry& reg, const char* filename) {
     const char* cmd = w[0];
     bool changed = false;
 
-    // массив
+    // M : массив 
     if (strcmp(cmd, "MPUSH") == 0 && n >= 3) {
         Entry* e = regGetOrCreate(reg, w[1], 'M');
-        if (e) { addAtEnd(e->arr, toInt(w[2])); changed = true; }
+        if (e) { addAtEnd(e->arr, std::string(w[2])); changed = true; }
     }
     else if (strcmp(cmd, "MPUSHAT") == 0 && n >= 4) {
         Entry* e = regGetOrCreate(reg, w[1], 'M');
-        if (e) { addAtIndex(e->arr, toInt(w[2]), toInt(w[3])); changed = true; }
+        if (e) { addAtIndex(e->arr, stoi(w[2]), std::string(w[3])); changed = true; }
     }
     else if (strcmp(cmd, "MDEL") == 0 && n >= 3) {
         Entry* e = regFind(reg, w[1]);
-        if (e && e->type == 'M') { removeAtIndex(e->arr, toInt(w[2])); changed = true; }
+        if (e && e->type == 'M') { removeAtIndex(e->arr, stoi(w[2])); changed = true; }
         else cout << "ERROR: array '" << w[1] << "' not found\n";
     }
     else if (strcmp(cmd, "MSET") == 0 && n >= 4) {
         Entry* e = regFind(reg, w[1]);
-        if (e && e->type == 'M') { replaceAtIndex(e->arr, toInt(w[2]), toInt(w[3])); changed = true; }
+        if (e && e->type == 'M') { replaceAtIndex(e->arr, stoi(w[2]), std::string(w[3])); changed = true; }
         else cout << "ERROR: array '" << w[1] << "' not found\n";
     }
     else if (strcmp(cmd, "MGET") == 0 && n >= 3) {
         Entry* e = regFind(reg, w[1]);
         if (e && e->type == 'M')
-            cout << "M[" << w[2] << "] = " << getElement(e->arr, toInt(w[2])) << "\n";
+            cout << "M[" << w[2] << "] = " << getElement(e->arr, stoi(w[2])) << "\n";
         else cout << "ERROR: array '" << w[1] << "' not found\n";
     }
     else if (strcmp(cmd, "MLEN") == 0 && n >= 2) {
@@ -92,18 +84,18 @@ bool processCommand(const char* line, Registry& reg, const char* filename) {
         else cout << "ERROR: array '" << w[1] << "' not found\n";
     }
 
-    // односвязный
+    // F : односвязный
     else if (strcmp(cmd, "FPUSH") == 0 && n >= 3) {
         Entry* e = regGetOrCreate(reg, w[1], 'F');
-        if (e) { addTail(e->fl, toInt(w[2])); changed = true; }
+        if (e) { addTail(e->fl, std::string(w[2])); changed = true; }
     }
     else if (strcmp(cmd, "FADDH") == 0 && n >= 3) {
         Entry* e = regGetOrCreate(reg, w[1], 'F');
-        if (e) { addHead(e->fl, toInt(w[2])); changed = true; }
+        if (e) { addHead(e->fl, std::string(w[2])); changed = true; }
     }
     else if (strcmp(cmd, "FDEL") == 0 && n >= 3) {
         Entry* e = regFind(reg, w[1]);
-        if (e && e->type == 'F') { removeByValue(e->fl, toInt(w[2])); changed = true; }
+        if (e && e->type == 'F') { removeByValue(e->fl, std::string(w[2])); changed = true; }
         else cout << "ERROR: forward list '" << w[1] << "' not found\n";
     }
     else if (strcmp(cmd, "FDELH") == 0 && n >= 2) {
@@ -119,7 +111,7 @@ bool processCommand(const char* line, Registry& reg, const char* filename) {
     else if (strcmp(cmd, "FGET") == 0 && n >= 3) {
         Entry* e = regFind(reg, w[1]);
         if (e && e->type == 'F')
-            cout << "index = " << searchByValue(e->fl, toInt(w[2])) << "\n";
+            cout << "index = " << searchByValue(e->fl, std::string(w[2])) << "\n";
         else cout << "ERROR: forward list '" << w[1] << "' not found\n";
     }
     else if (strcmp(cmd, "FLEN") == 0 && n >= 2) {
@@ -133,18 +125,18 @@ bool processCommand(const char* line, Registry& reg, const char* filename) {
         else cout << "ERROR: forward list '" << w[1] << "' not found\n";
     }
 
-    // двусвязный
+    // L : двусвязный
     else if (strcmp(cmd, "LPUSH") == 0 && n >= 3) {
         Entry* e = regGetOrCreate(reg, w[1], 'L');
-        if (e) { addTail(e->dl, toInt(w[2])); changed = true; }
+        if (e) { addTail(e->dl, std::string(w[2])); changed = true; }
     }
     else if (strcmp(cmd, "LADDH") == 0 && n >= 3) {
         Entry* e = regGetOrCreate(reg, w[1], 'L');
-        if (e) { addHead(e->dl, toInt(w[2])); changed = true; }
+        if (e) { addHead(e->dl, std::string(w[2])); changed = true; }
     }
     else if (strcmp(cmd, "LDEL") == 0 && n >= 3) {
         Entry* e = regFind(reg, w[1]);
-        if (e && e->type == 'L') { removeByValue(e->dl, toInt(w[2])); changed = true; }
+        if (e && e->type == 'L') { removeByValue(e->dl, std::string(w[2])); changed = true; }
         else cout << "ERROR: doubly list '" << w[1] << "' not found\n";
     }
     else if (strcmp(cmd, "LDELH") == 0 && n >= 2) {
@@ -160,7 +152,7 @@ bool processCommand(const char* line, Registry& reg, const char* filename) {
     else if (strcmp(cmd, "LGET") == 0 && n >= 3) {
         Entry* e = regFind(reg, w[1]);
         if (e && e->type == 'L')
-            cout << "index = " << searchByValue(e->dl, toInt(w[2])) << "\n";
+            cout << "index = " << searchByValue(e->dl, std::string(w[2])) << "\n";
         else cout << "ERROR: doubly list '" << w[1] << "' not found\n";
     }
     else if (strcmp(cmd, "LLEN") == 0 && n >= 2) {
@@ -179,10 +171,10 @@ bool processCommand(const char* line, Registry& reg, const char* filename) {
         else cout << "ERROR: doubly list '" << w[1] << "' not found\n";
     }
 
-    // стек
+    // S : стек
     else if (strcmp(cmd, "SPUSH") == 0 && n >= 3) {
         Entry* e = regGetOrCreate(reg, w[1], 'S');
-        if (e) { push(e->st, toInt(w[2])); changed = true; }
+        if (e) { push(e->st, std::string(w[2])); changed = true; }
     }
     else if (strcmp(cmd, "SPOP") == 0 && n >= 2) {
         Entry* e = regFind(reg, w[1]);
@@ -205,10 +197,10 @@ bool processCommand(const char* line, Registry& reg, const char* filename) {
         else cout << "ERROR: stack '" << w[1] << "' not found\n";
     }
 
-    // очередь
+    //  Q : очередь
     else if (strcmp(cmd, "QPUSH") == 0 && n >= 3) {
         Entry* e = regGetOrCreate(reg, w[1], 'Q');
-        if (e) { push(e->q, toInt(w[2])); changed = true; }
+        if (e) { push(e->q, std::string(w[2])); changed = true; }
     }
     else if (strcmp(cmd, "QPOP") == 0 && n >= 2) {
         Entry* e = regFind(reg, w[1]);
@@ -231,49 +223,59 @@ bool processCommand(const char* line, Registry& reg, const char* filename) {
         else cout << "ERROR: queue '" << w[1] << "' not found\n";
     }
 
-    //авл
-    else if (strcmp(cmd, "TINSERT") == 0 && n >= 3) {
-        Entry* e = regGetOrCreate(reg, w[1], 'T');
-        if (e) { insert(e->tr, toInt(w[2])); changed = true; }
+    // T : полное бинарное дерево
+    // 1. Добавление элемента (по таблице: TINSERT)
+    else if (strcmp(cmd, "TINSERT") == 0 && n >= 2) {
+        const char* name = (n >= 3) ? w[1] : "mytree";
+        const char* val  = (n >= 3) ? w[2] : w[1];
+        Entry* e = regGetOrCreate(reg, name, 'T');
+        if (e) { e->tr.insert(std::string(val)); changed = true; }
     }
-    else if (strcmp(cmd, "TDEL") == 0 && n >= 3) {
-        Entry* e = regFind(reg, w[1]);
-        if (e && e->type == 'T') { remove(e->tr, toInt(w[2])); changed = true; }
-        else cout << "ERROR: tree '" << w[1] << "' not found\n";
+    
+    // 2. Поиск/Чтение элемента (по таблице: TGET, по скриншоту методички: ISMEMBER)
+    else if ((strcmp(cmd, "TGET") == 0 || strcmp(cmd, "ISMEMBER") == 0) && n >= 2) {
+        const char* name = (n >= 3) ? w[1] : "mytree";
+        const char* val  = (n >= 3) ? w[2] : w[1];
+        Entry* e = regFind(reg, name);
+        if (e && e->type == 'T') {
+            // Если найден — TRUE, иначе FALSE
+            bool found = (e->tr.search(std::string(val)) != -1);
+            cout << (found ? "TRUE" : "FALSE") << "\n";
+        }
+        else cout << "ERROR: tree '" << name << "' not found\n";
     }
-    else if (strcmp(cmd, "TGET") == 0 && n >= 3) {
-        Entry* e = regFind(reg, w[1]);
+    
+    // 3. Проверка на полноту (вместо удаления TDEL)
+    else if (strcmp(cmd, "TCHECK") == 0 && n >= 1) {
+        const char* name = (n >= 2) ? w[1] : "mytree";
+        Entry* e = regFind(reg, name);
         if (e && e->type == 'T')
-            cout << (search(e->tr, toInt(w[2])) ? "found\n" : "not found\n");
-        else cout << "ERROR: tree '" << w[1] << "' not found\n";
+            cout << (e->tr.isComplete() ? "TRUE" : "FALSE") << "\n";
+        else cout << "ERROR: tree '" << name << "' not found\n";
     }
-    else if (strcmp(cmd, "TPRINT") == 0 && n >= 2) {
-        Entry* e = regFind(reg, w[1]);
-        if (e && e->type == 'T') { cout << "T_" << e->name << " : "; readInOrder(e->tr); }
-        else cout << "ERROR: tree '" << w[1] << "' not found\n";
+    
+    // 4. Обходы (чтение структуры)
+    else if (strcmp(cmd, "TPRE") == 0 && n >= 1) {
+        const char* name = (n >= 2) ? w[1] : "mytree";
+        Entry* e = regFind(reg, name);
+        if (e && e->type == 'T') { e->tr.printPre(); }
+        else cout << "ERROR: tree '" << name << "' not found\n";
     }
-    else if (strcmp(cmd, "TPREORDER") == 0 && n >= 2) {
-        Entry* e = regFind(reg, w[1]);
-        if (e && e->type == 'T') printPreOrder(e->tr);
-        else cout << "ERROR: tree '" << w[1] << "' not found\n";
+    else if (strcmp(cmd, "TIN") == 0 && n >= 1) {
+        const char* name = (n >= 2) ? w[1] : "mytree";
+        Entry* e = regFind(reg, name);
+        if (e && e->type == 'T') { e->tr.printIn(); }
+        else cout << "ERROR: tree '" << name << "' not found\n";
     }
-    else if (strcmp(cmd, "TPOSTORDER") == 0 && n >= 2) {
-        Entry* e = regFind(reg, w[1]);
-        if (e && e->type == 'T') printPostOrder(e->tr);
-        else cout << "ERROR: tree '" << w[1] << "' not found\n";
-    }
-    else if (strcmp(cmd, "TINORDER") == 0 && n >= 2) {
-        Entry* e = regFind(reg, w[1]);
-        if (e && e->type == 'T') printInOrder(e->tr);
-        else cout << "ERROR: tree '" << w[1] << "' not found\n";
-    }
-    else if (strcmp(cmd, "TLEVEL") == 0 && n >= 2) {
-        Entry* e = regFind(reg, w[1]);
-        if (e && e->type == 'T') printLevelOrder(e->tr);
-        else cout << "ERROR: tree '" << w[1] << "' not found\n";
+    else if (strcmp(cmd, "TPOST") == 0 && n >= 1) {
+        const char* name = (n >= 2) ? w[1] : "mytree";
+        Entry* e = regFind(reg, name);
+        if (e && e->type == 'T') { e->tr.printPost(); }
+        else cout << "ERROR: tree '" << name << "' not found\n";
     }
 
 
+    // Общие 
     else if (strcmp(cmd, "PRINT") == 0) {
         Entry* e = reg.head;
         while (e) {
@@ -282,7 +284,10 @@ bool processCommand(const char* line, Registry& reg, const char* filename) {
             else if (e->type == 'L') { cout << "L_" << e->name << " : "; readForward(e->dl); }
             else if (e->type == 'S') { cout << "S_" << e->name << " : "; readStack(e->st); }
             else if (e->type == 'Q') { cout << "Q_" << e->name << " : "; readQueue(e->q); }
-            else if (e->type == 'T') { cout << "T_" << e->name << " : "; readInOrder(e->tr); }
+            else if (e->type == 'T') { 
+                cout << "T_" << e->name << " : "; 
+                e->tr.print(); 
+            }
             e = e->next;
         }
     }
@@ -306,29 +311,46 @@ bool processCommand(const char* line, Registry& reg, const char* filename) {
     return changed;
 }
 
-int main() {
-    const char* filename = "data.txt";
+int main(int argc, char* argv[]) {
+    std::string filename = "data.txt";
+    std::string query = "";
+
+    // Разбор аргументов командной строки
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "--file") == 0 && i + 1 < argc) {
+            filename = argv[++i];
+        } else if (strcmp(argv[i], "--query") == 0 && i + 1 < argc) {
+            query = argv[++i];
+        }
+    }
 
     Registry reg;
     regInit(reg);
-    loadRegistry(filename, reg);   // пытаемся загрузить, если файла нет — ничего
+    loadRegistry(filename.c_str(), reg);
 
-    cout << "Введите HELP для списка команд, EXIT для выхода\n";
+    // если передан флаг --query (режим утилиты)
+    if (!query.empty()) {
+        processCommand(query.c_str(), reg, filename.c_str());
+        saveRegistry(filename.c_str(), reg); // сохраняем изменения
+        regFree(reg);
+        return 0; // программа завершается сразу после одной команды
+    }
 
+    // если аргументов нет (режим интерактивной консоли)
+    std::cout << "Введите HELP для списка команд, EXIT для выхода\n";
     char line[512];
     while (true) {
-        cout << "> ";
-        if (!cin.getline(line, sizeof(line))) break;
+        std::cout << "> ";
+        if (!std::cin.getline(line, sizeof(line))) break;
         if (line[0] == 0) continue;
 
-        // отдельно обрабатываем EXIT
-        if (strcmp(line, "EXIT") == 0 || strcmp(line, "exit") == 0) {
-            saveRegistry(filename, reg);
+           if (strcmp(line, "EXIT") == 0 || strcmp(line, "exit") == 0) {
+            saveRegistry(filename.c_str(), reg);
             break;
         }
 
-        bool changed = processCommand(line, reg, filename);
-        if (changed) saveRegistry(filename, reg);  // авто-сохранение
+        bool changed = processCommand(line, reg, filename.c_str());
+        if (changed) saveRegistry(filename.c_str(), reg);
     }
 
     regFree(reg);

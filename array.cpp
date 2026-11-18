@@ -1,20 +1,21 @@
 #include "array.h"
 #include <iostream>
 #include <fstream>
+#include <string>
 
 void initArray(Array& arr, int cap) {
     arr.capacity = cap;
     arr.size = 0;
-    arr.data = new int[cap];
+    arr.data = new std::string[cap];
 }
 
-void addAtEnd(Array& arr, int val) {    // добавление в конец
+void addAtEnd(Array& arr, const std::string& val) {    // добавление в конец
     // проверка на переполнение перед добавлением
     if (arr.size >= arr.capacity) return;
     arr.data[arr.size++] = val;
 }
 
-void addAtIndex(Array& arr, int idx, int val) {      // добавление по индексу со сдвигом последующих эл-тов
+void addAtIndex(Array& arr, int idx, const std::string& val) {      // добавление по индексу со сдвигом последующих эл-тов
     // проверка корректности индекса и наличия свободного места
     if (idx < 0 || idx > arr.size || arr.size >= arr.capacity) return;
     // сдвиг элементов вправо для освобождения места
@@ -24,9 +25,9 @@ void addAtIndex(Array& arr, int idx, int val) {      // добавление п�
     ++arr.size;
 }
 
-int getElement(const Array& arr, int idx) {
+std::string getElement(const Array& arr, int idx) {
     // безопасное получение элемента с проверкой границ
-    return (idx >= 0 && idx < arr.size) ? arr.data[idx] : -1;
+    return (idx >= 0 && idx < arr.size) ? arr.data[idx] : "";
 }
 
 void removeAtIndex(Array& arr, int idx) {    // удаление по индексу со сдвигом последующих эл-тов
@@ -38,7 +39,7 @@ void removeAtIndex(Array& arr, int idx) {    // удаление по индек
     --arr.size;
 }
 
-void replaceAtIndex(Array& arr, int idx, int val) {
+void replaceAtIndex(Array& arr, int idx, const std::string& val) {
     // замена значения при корректном индексе
     if (idx >= 0 && idx < arr.size)
         arr.data[idx] = val;
@@ -54,7 +55,6 @@ void readArray(const Array& arr) {
         std::cout << arr.data[i] << " ";
     std::cout << "\n";
 }
-
 
 void destroyArray(Array& arr) {
     delete[] arr.data;

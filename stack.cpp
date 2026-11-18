@@ -1,12 +1,13 @@
 #include "stack.h"
 #include <iostream>
+#include <string>
 
 void initStack(Stack& st) {
     st.top = nullptr;
     st.size = 0;
 }
 
-void push(Stack& st, int val) {     // добавление на вершину (push)
+void push(Stack& st, const std::string& val) {     // добавление на вершину (push)
     StackNode* n = new StackNode{val, st.top};
     st.top = n;
     ++st.size;
@@ -20,8 +21,8 @@ void pop(Stack& st) {    // удаление с вершины (pop)
     --st.size;
 }
 
-int peek(const Stack& st) {      // получение значения вершины без удаления (peek)
-    return (st.top) ? st.top->data : -1;
+std::string peek(const Stack& st) {      // получение значения вершины без удаления (peek)
+    return (st.top) ? st.top->data : " ";
 }
 
 void readStack(const Stack& st) {   // вывод всех элементов стека (от вершины к низу)

@@ -2,6 +2,7 @@
 #include <fstream>
 #include <cstring>
 #include <iostream>
+#include <string>
 using namespace std;
 
 static const char* prefixOf(char t) {
@@ -46,7 +47,7 @@ void saveRegistry(const char* filename, Registry& r) {
         else if (cur->type == 'S') {
             // сохраняем снизу вверх — чтобы при чтении push восстановил порядок
             int cnt = cur->st.size;
-            int* buf = new int[cnt > 0 ? cnt : 1];
+            std::string* buf = new std::string[cnt > 0 ? cnt : 1];
             StackNode* p = cur->st.top;
             for (int i = cnt - 1; i >= 0; i--) {
                 buf[i] = p->data;
@@ -66,20 +67,16 @@ void saveRegistry(const char* filename, Registry& r) {
                 first = false;
             }
         }
+        
         else if (cur->type == 'T') {
-            // обходим дерево в прямом порядке (pre-order) и пишем ключи
-            AVLNode* stack[1000];
-            int sp = 0;
-            if (cur->tr.root) stack[sp++] = cur->tr.root;
-            while (sp > 0) {
-                AVLNode* n = stack[--sp];
+            // сохраняем в порядке уровней (индексы 1..size)
+            for (int i = 1; i <= cur->tr.getSize(); i++) {
                 if (!first) f << ",";
-                f << n->key;
+                f << cur->tr.getElement(i);
                 first = false;
-                if (n->right) stack[sp++] = n->right;
-                if (n->left)  stack[sp++] = n->left;
             }
         }
+        
         f << "\n";
         cur = cur->next;
     }
@@ -87,14 +84,14 @@ void saveRegistry(const char* filename, Registry& r) {
 }
 
 // превращает "a,b,c" в массив строк. Возвращает число строк.
-static int splitByComma(const char* s, char items[][32], int maxItems) {
+static int splitByComma(const char* s, char items[][64], int maxItems) {
     int count = 0;
     int pos = 0;
     int len = (int)strlen(s);
 
     while (pos <= len && count < maxItems) {
         int k = 0;
-        while (pos < len && s[pos] != ',' && k < 31) {
+        while (pos < len && s[pos] != ',' && k < 63) {
             items[count][k++] = s[pos++];
         }
         items[count][k] = 0;
@@ -103,16 +100,6 @@ static int splitByComma(const char* s, char items[][32], int maxItems) {
         else break;
     }
     return count;
-}
-
-static int toInt(const char* s) {
-    int v = 0, i = 0, sign = 1;
-    if (s[i] == '-') { sign = -1; i++; }
-    while (s[i] >= '0' && s[i] <= '9') {
-        v = v * 10 + (s[i] - '0');
-        i++;
-    }
-    return v * sign;
 }
 
 void loadRegistry(const char* filename, Registry& r) {
@@ -144,8 +131,8 @@ void loadRegistry(const char* filename, Registry& r) {
 
         Entry* e = regCreate(r, name, type);
 
-        // правая часть: "1,2,3"
-        char items[1000][32];
+        // правая часть: "1,2,3" или "apple,banana"
+        char items[1000][64];
         int n = splitByComma(line + colon + 1, items, 1000);
 
         for (int i = 0; i < n; i++) {
@@ -154,13 +141,14 @@ void loadRegistry(const char* filename, Registry& r) {
             while (*s == ' ') s++;
             if (*s == 0) continue;
 
-            int v = toInt(s);
+            std::string v(s); // <--- ТЕПЕРЬ ЭТО СТРОКА, А НЕ ЧИСЛО!
+            
             if (type == 'M') addAtEnd(e->arr, v);
             else if (type == 'F') addTail(e->fl, v);
             else if (type == 'L') addTail(e->dl, v);
             else if (type == 'S') push(e->st, v);
             else if (type == 'Q') push(e->q, v);
-            else if (type == 'T') insert(e->tr, v);
+            else if (type == 'T') e->tr.insert(v);
         }
     }
     f.close();
